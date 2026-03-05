@@ -1,11 +1,16 @@
-import json
+class SecurityValidator:
+    @staticmethod
+    def is_prompt_injection(user_input: str) -> bool:
+        blacklist = [
+            "ignore as instruções", 
+            "system prompt", 
+            "aja como", 
+            "revelar instruções",
+            "ignore previous instructions"
+        ]
+        query_lower = user_input.lower()
+        return any(term in query_lower for term in blacklist)
 
-def validate_json(response_text):
-    try:
-        data = json.loads(response_text)
-        if "status" not in data:
-            raise ValueError("Campo 'status' obrigatório")
-        return True, data
-    except json.JSONDecodeError as e:
-        raise ValueError(f"Erro ao decodificar JSON: {e}")
-        
+    @staticmethod
+    def get_safe_error():
+        return "\n[BLOQUEIO DE SEGURANÇA]: Tentativa de manipulação detectada."
